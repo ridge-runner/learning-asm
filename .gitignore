@@ -1,2 +1,6 @@
 # compiler files
 *.o
+*.out
+
+# Ignore executables in /bin
+bin/
