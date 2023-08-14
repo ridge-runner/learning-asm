@@ -1,7 +1,8 @@
 # learning-asm
 Learning the basics of assembly. Using x86_64 with the GNU Assembler. 
 
-Based on "Learn to Program with Assembly" by Bartlett
+Based on "Learn to Program with Assembly" by Bartlett and "Programming From the 
+Ground Up" by Bruno.
 
 ## PURPOSE
 To learn more about computer architecture from the ground up. 
