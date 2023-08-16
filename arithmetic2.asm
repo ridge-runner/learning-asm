@@ -58,11 +58,13 @@ _start:
     subb $48, %al
 
     # Now we have a converted number from string to quadword
-    
+
     #see if number is even. divb saves the quotient to al, remainder to ah.
-    divb $2
-    cmpb $0, %ah
-    jg odd
+    # The remainder, if present, will be returned. If not, al will be returned instead.
+    movb $2, %cl;
+    divb %cl
+    test %ah, %ah
+    jnz odd
     
     movb %al, %dil  # move %al value to rdi so can echo it out to error on CLI.
 
