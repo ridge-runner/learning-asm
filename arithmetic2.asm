@@ -1,20 +1,30 @@
 # PURPOSE:  A simple program demonstrating simple arithmetic. 
 #           Taken from Bartlett.
-#           Alteration: Added the ability to take arguments from
+#           Alteration: Added the ability to take single argument from
 #                       the command line.
 
-# INPUT:    None.
-#           Alteration: When called from CLI, the program will take
-#                       one number (byte since the exit code only
-#                       returns values between 0-255.
-#
+# INPUT:    Program takes one argument on the CLI of 0-9. 
+#           
 
 # OUTPUT:   Returns status code that is the result of arithmetic operation(s).
+#           If the input was an even number, half of the value is returned.
+#           If the inputs was an odd number, the remainder is returned.
 #           Result can be seen by calling "echo $?".
+
+# VARIABLES: 
+#           rdi: returns value
+#           ah: holds remainder
+#           al: holds quotient
+#           divisor: holds divisor
+#           
+
 
 .globl _start
 
 .section .data
+
+    divisor:
+        .byte 2
 
 .section .text
 
@@ -45,32 +55,31 @@ _start:
 
     
     # Dereference rsi so we can use the value it points to low byte of the accumulator.
-    movb (%rsi), %al
+    movb (%rsi), %cl
 
     # test input to make sure that it is between ASCII 0 - 9
-    cmpb $48, %al
+    cmpb $48, %cl
     jl bad_input
 
-    cmpb $57, %al
+    cmpb $57, %cl
     jg bad_input
 
     # convert string to number
-    subb $48, %al
+    subb $48, %cl
 
     # Now we have a converted number from string to quadword
 
     #see if number is even. divb saves the quotient to al, remainder to ah.
     # The remainder, if present, will be returned. If not, al will be returned instead.
-    movb $2, %cl;
-    divb %cl
+    divb divisor 
     test %ah, %ah
     jnz odd
     
-    movb %al, %dil  # move %al value to rdi so can echo it out to error on CLI.
+    movzbl %al, %edi  # move %al value to rdi so can echo it out to error on CLI.
 
 odd:
     # if odd, send ah to return code (dil)
-    movb %ah, %dil
+    movzbl %ah, %edi
     jmp exit
 
 bad_input:
