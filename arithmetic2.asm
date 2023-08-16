@@ -46,7 +46,7 @@ _start:
     popq %rdi   # arg[0] - pop off the program name to rdi
     popq %rsi   # arg[1] - popp off pointer to first argument to rsi
 
-    # clear junk out of rax & rdx
+    # clear junk out of rax & ax
     xorq %rax, %rax  # xor clears the bytes by comparing copies of the same 
     xorw %ax, %ax    # register. If the bytes are set, then they eval to zero.
                      # 01110 rax
@@ -64,18 +64,22 @@ _start:
     cmpb $57, %cl
     jg bad_input
 
-    # convert string to number
+    #convert string to number
     subb $48, %cl
 
     # Now we have a converted number from string to quadword
 
     #see if number is even. divb saves the quotient to al, remainder to ah.
     # The remainder, if present, will be returned. If not, al will be returned instead.
+    movb %cl, %al
     divb divisor 
+
+    # test uses a bitwise AND to check if a register is zero or not.
     test %ah, %ah
-    jnz odd
+    jnz odd #jump-if-not-zero
     
     movzbl %al, %edi  # move %al value to rdi so can echo it out to error on CLI.
+    jmp exit
 
 odd:
     # if odd, send ah to return code (dil)
@@ -85,7 +89,7 @@ odd:
 bad_input:
     # movzbl - move zero-extend byte-to-long - fills the extra space in %edi
     # with zeros to prevent junk from messing with our result.
-    movzbl %al, %edi
+    movzbl %cl, %edi
     jmp exit
     
 exit: 

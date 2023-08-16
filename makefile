@@ -2,7 +2,7 @@
 #
 
 # Variables
-AS = as
+AS = as -g
 LD = ld
 
 # Pattern rule to build .o file from .asm file
