@@ -1,11 +1,8 @@
-# PURPOSE:  A simple program demonstrating simple arithmetic.
-# 
-#
+# PURPOSE:  A simple program demonstrating simple arithmetic. 
+#           Taken from Bartlett.
 
-# INPUT:    none
+# INPUT:    None.
 #
-#
-
 # OUTPUT:   Returns status code that is the result of arithmetic operation(s).
 #           Result can be seen by calling "echo $?".
 
@@ -16,6 +13,7 @@
 .section .text
 
 _start:
+
    # Perform various arithmetic functions
    movq $3, %rdi    # move quadword value 3 into 64b index register
    movq %rdi, %rax  # move index number (3) int accumulator.
