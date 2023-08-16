@@ -48,7 +48,7 @@ _start:
 
     # clear junk out of rax & rdx
     xorq %rax, %rax  # xor clears the bytes by comparing copies of the same 
-                     # register. If the bytes are set, then they eval to zero.
+    xorw %ax, %ax    # register. If the bytes are set, then they eval to zero.
                      # 01110 rax
                      # 01110 rax
                      # 00000 xor is only true if one byte is set, false if both.
