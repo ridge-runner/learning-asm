@@ -44,16 +44,8 @@ _start:
                      # 00000 xor is only true if one byte is set, false if both.
 
     
-    # TODO: complete the conversion 
-    #       To complete the conversion from ASCII to int. We look up the data value
-    #       for '0', which is 48, and subtract it from the value stored in rsi's 
-    #       memory reference. Since ASCII is a numerical value, the system will treat it as 
-    #       a number, so we can test to see if the input is within a range (>= 48 < 58).
-    #
-    
     # Dereference rsi so we can use the value it points to low byte of the accumulator.
     movb (%rsi), %al
-
 
     # test input to make sure that it is between ASCII 0 - 9
     cmpb $48, %al
@@ -63,14 +55,21 @@ _start:
     jg bad_input
 
     # convert string to number
-    sub $48, %al
+    subb $48, %al
 
     # Now we have a converted number from string to quadword
+    
+    #see if number is even. divb saves the quotient to al, remainder to ah.
+    divb $2
+    cmpb $0, %ah
+    jg odd
+    
+    movb %al, %dil  # move %al value to rdi so can echo it out to error on CLI.
 
-    # Now we test to make sure that the output is correct before we begin 
-    # working with the value. We clear rdi before moving the value to it.
-
-    movb %al, %dil  # move value to rdi so can echo it out to error on CLI.
+odd:
+    # if odd, send ah to return code (dil)
+    movb %ah, %dil
+    jmp exit
 
 bad_input:
     # movzbl - move zero-extend byte-to-long - fills the extra space in %edi
