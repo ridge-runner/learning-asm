@@ -14,4 +14,5 @@ NOTE: the results from each program can be seen by using "echo $?" in the CLI.
 * myexit.asm - returns an exit code.
 * arithmetic.asm - shows how basic math is done. Exit code is used to deliver the final result.
 * maximum.asm - takes an array of longs, finds the largest element, then returns the value via exit code.
-
+* arithmatic2.asm - takes a number (string) from CLI and performs simple arithmetic upon it. (TODO)
+  
