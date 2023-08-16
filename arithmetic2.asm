@@ -48,24 +48,24 @@ _start:
     #
     
     # Dereference rsi so we can use the value it points to.
-    movq (%rsi), %rax
+    movb (%rsi), %al
 
 
     # test input to make sure that it is between ASCII 0 - 9
-    cmpq $47, %rax
+    cmpb $47, %al
     jl exit
 
-    cmpq $57, %rax
+    cmpb $57, %al
     jl exit
 
     # convert string to number
-    subq $48, %rax
+    sub $48, %al
 
     # Now we have a converted number from string to quadword
 
     # Now we test to make sure that the output is correct before we begin 
     # working with the value.
-    mov %rax, %rdi  # move value to rdi so can echo it out to error on CLI.
+    movb %al, %dil  # move value to rdi so can echo it out to error on CLI.
 
 
     
