@@ -29,12 +29,16 @@ _start:
     # the CLI start with the program name argc[0], then each value in order. Their default type is 
     # ASCII strings (or UTF, but I haven't studied this yet.) So, the number 5 passed
     # through the CLI will actually be 53 (ASCII '0' = 48, 48 + 5 = 53).
+    
+    xorq %rdi, %rdi # clear reg
+    xorq %rsi, %rsi # clear reg
+
     popq %rdi   # arg[0] - pop off the program name to rdi
     popq %rsi   # arg[1] - popp off pointer to first argument to rsi
 
     # clear junk out of rax & rdx
     xorq %rax, %rax  # xor clears the bytes by comparing copies of the same 
-    xorq %rdx, %rdx   # register. If the bytes are set, then they eval to zero.
+                     # register. If the bytes are set, then they eval to zero.
                      # 01110 rax
                      # 01110 rax
                      # 00000 xor is only true if one byte is set, false if both.
@@ -47,16 +51,16 @@ _start:
     #       a number, so we can test to see if the input is within a range (>= 48 < 58).
     #
     
-    # Dereference rsi so we can use the value it points to.
+    # Dereference rsi so we can use the value it points to low byte of the accumulator.
     movb (%rsi), %al
 
 
     # test input to make sure that it is between ASCII 0 - 9
-    cmpb $47, %al
-    jl exit
+    cmpb $48, %al
+    jl bad_input
 
     cmpb $57, %al
-    jl exit
+    jg bad_input
 
     # convert string to number
     sub $48, %al
@@ -64,10 +68,15 @@ _start:
     # Now we have a converted number from string to quadword
 
     # Now we test to make sure that the output is correct before we begin 
-    # working with the value.
+    # working with the value. We clear rdi before moving the value to it.
+
     movb %al, %dil  # move value to rdi so can echo it out to error on CLI.
 
-
+bad_input:
+    # movzbl - move zero-extend byte-to-long - fills the extra space in %edi
+    # with zeros to prevent junk from messing with our result.
+    movzbl %al, %edi
+    jmp exit
     
 exit: 
    # Set the exit system call number.
