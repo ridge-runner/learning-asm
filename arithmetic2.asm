@@ -22,15 +22,19 @@ _start:
    # USING THE STACK TO GET ARGC FROM CLI #
     popq %rax # move argc to rax
 
-    cmpq $2, %rax
+    cmpq $2, %rax # Tests to see if we have a value >= 2 in argc.
     jl exit
 
-    popq %rdi   # arg[0] - program name
-    popq %rsi  # arg[1] - pointer to first argument stored to rsi
+    # Cycle through the stack values down to the one we need. Arguments passed from 
+    # the CLI start with the program name argc[0], then each value in order. Their default type is 
+    # ASCII strings (or UTF, but I haven't studied this yet.) So, the number 5 passed
+    # through the CLI will actually be 53 (ASCII '0' = 48, 48 + 5 = 53).
+    popq %rdi   # arg[0] - pop off the program name to rdi
+    popq %rsi   # arg[1] - popp off pointer to first argument to rsi
 
-    # clear rax & rdx
+    # clear junk out of rax & rdx
     xorq %rax, %rax  # xor clears the bytes by comparing copies of the same 
-    xorq %rdx, rdx   # register. If the bytes are set, then they eval to zero.
+    xorq %rdx, %rdx   # register. If the bytes are set, then they eval to zero.
                      # 01110 rax
                      # 01110 rax
                      # 00000 xor is only true if one byte is set, false if both.
@@ -42,6 +46,28 @@ _start:
     #       memory reference. Since ASCII is a numerical value, the system will treat it as 
     #       a number, so we can test to see if the input is within a range (>= 48 < 58).
     #
+    
+    # Dereference rsi so we can use the value it points to.
+    movq (%rsi), %rax
+
+
+    # test input to make sure that it is between ASCII 0 - 9
+    cmpq $47, %rax
+    jl exit
+
+    cmpq $57, %rax
+    jl exit
+
+    # convert string to number
+    subq $48, %rax
+
+    # Now we have a converted number from string to quadword
+
+    # Now we test to make sure that the output is correct before we begin 
+    # working with the value.
+    mov %rax, %rdi  # move value to rdi so can echo it out to error on CLI.
+
+
     
 exit: 
    # Set the exit system call number.
