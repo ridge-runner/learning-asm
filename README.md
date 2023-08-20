@@ -60,3 +60,11 @@ The order of registers 10, 8, and 9 is unusual, but that is how they are ordered
 
 The register rdi means "destination index" and rsi "source index," followed by rdx "data" and rcx "counter." I've read that their names aren't that important anymore since
 they are all general registers. With the exception that rdi and rsi can't access byte-size data types (high byte & low byte.)
+
+### SIGNAL HANDLING IN x86_64
+I thought that I'd work on the alarm program (onesec.s) for a bit. I thought that I'd roll through the signal handling issue where the alarm signal would break the loop incrementing rax.  Then I discovered how tedious the process is to handle and register signals.  I'm still working through the process.  
+Overall, to solve this, what I need to do is create a byte to use as a sentinel value (0) in a conditional loop. Then have the signal generated from the alarm syscall to set the sentinel bit to 1.  That would break the loop and permit the instruction pointer to jump to the exit function.
+
+I need to have a better understanding of operating systems. I can find and copy code to get my program to work, but that doesn't teach the same lessons.
+
+
