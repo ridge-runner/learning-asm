@@ -6,12 +6,12 @@ AS = as -g
 LD = ld
 
 # Pattern rule to build .o file from .asm file
-%.o: %.asm
+%.o: %.s
 	$(AS) $< -o $@
 
 # Pattern rule to build binary from .o file
 %: %.o
-	$(LD) $< -o $@
+	$(LD) $< -e _start $@
 
 # Clean rule
 clean:

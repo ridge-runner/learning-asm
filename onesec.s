@@ -27,48 +27,70 @@
 #####################
 
 .section .data
-# none
+    flag: .byte 0
+
+.section .bss
+    sa_handler: .skip 8
+    sa_flags: .skip 8
+    sa_mask: .skip 8
+
+    .lcomm rax_str, 20
 
 .section .text
 
-.globl _start   
-
-.type _start, @function
+.globl _start
 
 _start:
    
-    # Clear registers
-    xorq %rax, %rax
-    xorq %rdi, %rdi
+# Clear out the sa_mask
+xorq %rdi, %rdi
+movq %rdi, sa_mask
 
- # syscall: Alarm ID Rax(37), rdi(sec)
-    movq $37, %rax
-    movq $1, %rdi
-    syscall
+# Set up the sigaction structure
+lea handler(%rip), %rdi
+movq %rdi, sa_handler
+movq $0, sa_flags
 
- # Register signal handler for alarm
- # rt_sigaction rax13, rdi(act), rsi(oact), rdx(sigsetsize)
-    xor %rsi, %rsi          ; clear registers
-    xor %rdx, %rdx          
+# Register the signal handler for SIGALARM (signal 14)
+lea sa_handler(%rip), %rdi
+xorq %rsi, %rsi
+xorq %rdx, %rdx
+movq $14, %rax
+syscall
 
-    movq $14, %rax          ; Syscall number
-    lea handler(%rip), %rdi ; addr of signal handler
-    syscall    
-    
-   # Loop to increment RAX
-loop:   
-    add $1, %rax
+# Set the alarm for 1 second in the future
+movq $37, %rax
+movq $1, %rdi
+syscall
+
+loop:
+    cmpb $0, flag(%rip)
+    je continue
+    jmp write 
+
+continue:
+    addq $1, %rax
     jmp loop
 
-handler:
-    # exit syscall
-    mov $60, %rax
-    xor %rdi, %rdi
-    syscall
+write: 
+    # Convert rax to ASCII
+    jmp dec_to_str
+    
+    # TODO: Write function
 
+    jmp exit
+
+dec_to_str:
+    
+    # TODO: Write conversion function
+    ret
+
+handler: 
+    movb $1, flag(%rip)
+    ret
 
 exit:
-
-    movq $60, rax
+    movq $0, %rdi
+    movq $60, %rax
     syscall
 
