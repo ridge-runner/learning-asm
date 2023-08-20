@@ -21,6 +21,8 @@ NOTE: the results from each program can be seen by using "echo $?" in the CLI.
   If odd, the remainder is returned. If even, the quotient is returned. If input is not an ASCII number 0-9,
   the program will return the number of the ASCII symbol. For example, 'A' will return 65.
   
+* exponent.s - calculates 2^3 and returns result.
+
 ### NOTES ON ARITHMETIC 2
 This program was based on the example put forth by Bartlett in "Learning to Program with Assembly."  I added the feature where 
 a number can be passed to the program via the CLI, then converted from ASCII chars to a number.  I learned a lot about memory pointers, comparing numbers, and how the CPU sees data (all of it is just ... numbers.) Working with the divb instruction was tricky as well since it only
