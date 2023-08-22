@@ -48,7 +48,8 @@ The call table is great in that it shows which registers handle the parameters f
 * %r8 - 5th arg
 * %r9 - 6th arg
 
-The order of registers 10, 8, and 9 is unusual, but that is how they are ordered in Linux systems.
+The order of registers 10, 8, and 9 is unusual, but that is how they are ordered in Linux systems. I took a few minutes to search for the 
+reason why they are reversed, but didn't find anything. 
 
 *The default mapping for x86_64 registers and C function parameter positions on Linux:*
 * %rdi - 1st arg
@@ -65,6 +66,6 @@ they are all general registers. With the exception that rdi and rsi can't access
 I thought that I'd work on the alarm program (onesec.s) for a bit. I thought that I'd roll through the signal handling issue where the alarm signal would break the loop incrementing rax.  Then I discovered how tedious the process is to handle and register signals.  I'm still working through the process.  
 Overall, to solve this, what I need to do is create a byte to use as a sentinel value (0) in a conditional loop. Then have the signal generated from the alarm syscall to set the sentinel bit to 1.  That would break the loop and permit the instruction pointer to jump to the exit function.
 
-I need to have a better understanding of operating systems. I can find and copy code to get my program to work, but that doesn't teach the same lessons.
+I need to have a better understanding of operating systems. I can find and copy code to get my program to work, but that doesn't provide the same experience.
 
 
