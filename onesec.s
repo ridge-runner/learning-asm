@@ -37,7 +37,7 @@
     sa_flags: .skip 8
     sa_mask: .skip 8
 
-    .lcomm rax_str, 20 # reserve buffer for 8B number.
+    .lcomm str_array, 20 # reserve buffer for 8B number.
 
 .section .text
 
@@ -76,8 +76,29 @@ continue:
     jmp loop
 
 dec_to_str:
-    # TODO: Write conversion function
+    # set up
+    xorq %rdi, %rdi # clear index
     
+    # load str array address (name) to rdi
+    lea -1(str_array+19), %rdi # load array addr to rdi
+    movb $0, (%rdi) # null terminate the string
+    
+convert_loop:
+    # rax contains the incremented value.
+    dec %rdi        # move index -1
+    xor %rdx, %rdx  # delete remainder
+    divq $10        # divid rax by ten, rdx takes remainder
+    addb $'0', %dl  # convert remainder to ASCII (add 48) to low bytes of rdx
+    movb %dl, (%rdx) # store ASCII character
+
+
+
+
+    # To convert decimal values to ASCII,
+    # We first loop over the value dividing
+    # by 10. Then to convert to ASCII, we add
+    # 48 (ASCII '0') to each number.
+
 
 write: 
     
