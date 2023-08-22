@@ -3,38 +3,41 @@
 #
 
 # INPUTS: NONE
+#   
+
+# OUTPUTS
+# SUM of incremented values to stdout.
 #
 
 # PROCESS:
-# * Figure out how to call a system timer.
-#       - Linux syscall #
-# * Set a register for counter.
-# * Instruction: INCQ 
-#
+# * Use the Alarm syscall to generate a 
+#   signal that will end the loop.
+# * Use the accumulator (rax) to track loops.
+# * Convert numerical value to ascii.
+# * Write sum to stdout.
+# *
 
-# OUTPUTS
-# SUM of incremented values.
-#
 
 # INSTRUCTIONS, REGISTERS & VARIABLES
-# RAX - Accumulator
-# RCX - Counter
-# SYSTEM TIMER - ??
-# MAINLOOP: - program loop
+# Alarm syscall - SIGALARM
+# signal handler - sa_handler
+# Write syscall
+# write to stdout.
+#
 
 #####################
 #   START
 #####################
 
 .section .data
-    flag: .byte 0
+    flag: .byte 0 # for the handler to break the loop.
 
 .section .bss
-    sa_handler: .skip 8
+    sa_handler: .skip 8 # reserve quadword
     sa_flags: .skip 8
     sa_mask: .skip 8
 
-    .lcomm rax_str, 20
+    .lcomm rax_str, 20 # reserve buffer for 8B number.
 
 .section .text
 
@@ -66,24 +69,21 @@ syscall
 loop:
     cmpb $0, flag(%rip)
     je continue
-    jmp write 
+    jmp dec_to_str
 
 continue:
     addq $1, %rax
     jmp loop
 
+dec_to_str:
+    # TODO: Write conversion function
+    
+
 write: 
-    # Convert rax to ASCII
-    jmp dec_to_str
     
     # TODO: Write function
 
     jmp exit
-
-dec_to_str:
-    
-    # TODO: Write conversion function
-    ret
 
 handler: 
     movb $1, flag(%rip)
